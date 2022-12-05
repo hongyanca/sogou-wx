@@ -1,16 +1,43 @@
 import playwright from 'playwright';
 import 'zx/globals';
 
+const PUB_ACC_LOC = './pub-accounts.json';
+const SOGOU_WX_URL = 'https://weixin.sogou.com/weixin?type=1&s_from=input&query=';
 const CSS_LOC = './data/styles';
 const REL_CSS_LOC = '../styles';
 const TITLE_MD5 = 'd9328d3f7071730e6db055f1fd5edb31';
 
 const run = async () => {
-  const browser = await playwright.chromium.launch({
+  // const browser = await playwright.chromium.launch({
+    const browser = await playwright.firefox.launch({
     headless: false // Show the browser.
   });
-
   const page = await browser.newPage();
+
+  await page.goto('https://weixin.sogou.com');
+  await page.waitForTimeout(1210);
+
+  const accounts = fs.readJsonSync(PUB_ACC_LOC);
+  await page.type('#query', 'lifeweek', {delay: 125});
+  await page.locator('text="搜公众号"').click();
+  for (let i=0; i<accounts.length; i++) {
+    
+    // const sogouQueryUrl = SOGOU_WX_URL + accounts[i].wx_id;
+    
+    
+    // await page.goto(sogouQueryUrl);
+    // await page.waitForTimeout(10000);
+    // const pageHtml = await page.content();
+    // console.log(pageHtml);
+  }
+ 
+  await page.waitForTimeout(32100);
+  await browser.close();
+  $`exit 1`  
+
+
+
+  
   await page.goto('https://mp.weixin.qq.com/s?src=11&timestamp=1670204845&ver=4207&signature=AT-cxLFs4zB2zK*sXCeCaJw6HW8NQbskuaLOcefgCIm4RtF7xmHujXK8w9iBPb8cmNERNBRdsn*MKWzIAASSAOjf1zRsQ2EwDKkdV9NfN*SlTwy7j5r9PoGHVQG1wG58&new=1');
   
   let pageHtml = await page.content();
@@ -68,4 +95,4 @@ async function replaceImgLinksWithLocalFiles (pageHtml, savePath, linkPath) {
 };
 
 
-run();
+await run();
