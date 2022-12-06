@@ -2,13 +2,13 @@
   {
     "wx_id": "bitsea",
     "pub_account_name": "槽边往事",
-    "article_index": "0",
+    "article_index": 0,
     "latest_article_md5": "d9328d3f7071730e6db055f1fd5edb31"
   },
   {
     "wx_id": "lifeweek",
     "pub_account_name": "三联生活周刊",
-    "article_index": "0",
+    "article_index": 0,
     "latest_article_md5": ""
   }
 ]

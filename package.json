@@ -1,9 +1,11 @@
 {
   "name": "sogou-wx",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Weixin Public Account Latest Article Collector",
   "main": "index.mjs",
-  "scripts": {},
+  "scripts": {
+    "start": "node index.mjs"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -12,6 +14,7 @@
   },
   "dependencies": {
     "dotenv": "^16.0.3",
+    "object-hash": "^3.0.0",
     "playwright": "^1.28.1",
     "zx": "^7.1.1"
   },
