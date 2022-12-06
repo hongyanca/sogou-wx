@@ -1,3 +1,5 @@
-PROXY_POOL=http://192.168.0.32:5555/random
-CURL_TIMEOUT=20
+PROXY_POOL='http://192.168.0.32:5555/random'
+CURL_TIMEOUT=30
 RETRY_COUNT=10
+
+SOGOU_WX_QUERY_BASE='https://weixin.sogou.com/weixin?type=1&s_from=input&query='

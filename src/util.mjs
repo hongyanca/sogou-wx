@@ -2,12 +2,13 @@ import 'zx/globals';
 
 
 export async function fetchWithProxy(url) {
-  const proxy = await getProxy();
   let pageHtml = '';
-  let exitCode = 1;
-
+  
   for (let i=0; i<process.env.RETRY_COUNT; i++) {
+    let exitCode = 1;
+
     try {
+      let proxy = await getProxy();
       const response = await $`curl -sS --max-time ${process.env.CURL_TIMEOUT} -x "${proxy}" ${url}`;
       // Use the black listed proxy 182.90.224.115:3128 for test.
       // const response = await $`curl -sS --max-time ${process.env.CURL_TIMEOUT} -x "182.90.224.115:3128" ${url}`;
@@ -25,6 +26,7 @@ export async function fetchWithProxy(url) {
       exitCode = p.exitCode;
       console.log(`Retry count ${i+1}. Error: ${p.stderr}`);
     }
+    
     if (exitCode === 0) break;
   }
 

@@ -12,8 +12,18 @@ const TITLE_MD5 = 'd9328d3f7071730e6db055f1fd5edb31';
 
 const run = async () => {
 
-  await fetchWithProxy('https://weixin.sogou.com/weixin?type=1&s_from=input&query=lifeweek');
-  // console.log(await fetchWithProxy('https://weixin.sogou.com/weixin?type=1&s_from=input&query=lifeweek'));
+  // await fetchWithProxy('https://weixin.sogou.com/weixin?type=1&s_from=input&query=lifeweek');
+  const accounts = fs.readJsonSync(PUB_ACC_LOC);
+  for (let i=0; i<accounts.length; i++) {
+    const sogouQueryUrl = process.env.SOGOU_WX_QUERY_BASE + accounts[i].wx_id;
+    const pageHtml = await fetchWithProxy(sogouQueryUrl);
+    if (pageHtml && pageHtml.length === 0) {
+      continue;
+    }
+    
+    console.log('✅\n', pageHtml);
+
+  }
   await $`exit 1`
 
   const browser = await playwright.chromium.launch({
@@ -22,16 +32,7 @@ const run = async () => {
   });
   const page = await browser.newPage();
  
-  const accounts = fs.readJsonSync(PUB_ACC_LOC);
-  for (let i=0; i<accounts.length; i++) {
-    const sogouQueryUrl = SOGOU_WX_URL + accounts[i].wx_id;
-    
-    
-    // await page.goto(sogouQueryUrl);
-    // await page.waitForTimeout(10000);
-    // const pageHtml = await page.content();
-    // console.log(pageHtml);
-  }
+
  
   await page.waitForTimeout(32100);
   await browser.close();
