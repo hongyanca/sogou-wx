@@ -13,8 +13,6 @@ export async function fetchWithProxy(url) {
     try {
       let proxy = await getProxy();
       const response = await $`curl -sS --max-time ${CONNECT_TIMEOUT} -x "${proxy}" ${url}`;
-      // Use the black listed proxy 182.90.224.115:3128 for test.
-      // const response = await $`curl -sS --max-time ${CONNECT_TIMEOUT} -x "182.90.224.115:3128" ${url}`;
       
       pageHtml = response._stdout || '';
       // Proxy worked, but sogou antispider has detected the fetch.
@@ -51,18 +49,21 @@ export async function getProxy() {
 }
 
 
-export async function downloadUrl(url, retry = RETRY_COUNT, proxy = null) {
+export async function downloadUrl(url, retry = RETRY_COUNT) {
   let content = null;
 
-  try {
-    const response = await fetch(url);
-    if (response.status !== 200) {
-      throw(`Failed to fetch the article. Status code: ${response.status}`);
+  for (let i=0; i<RETRY_COUNT; i++) {
+    try {
+      const response = await fetch(url);
+      if (response.status !== 200) {
+        throw(`Failed to fetch the article. Status code: ${response.status}`);
+      }
+      content = await response.text();
+      break;
+    } catch (error) {
+      console.log(error);
+      content = null;
     }
-    content = await response.text();
-  } catch (error) {
-    console.log(error);
-    content = null;
   }
 
   return content;

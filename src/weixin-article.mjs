@@ -7,7 +7,9 @@ import { downloadUrl } from './util.mjs';
 export async function saveWeixinArticle(url, accountId, path, checksum) {
   // Todo:
   // replace http with https in the url
-  let pageHtml = await downloadUrl(url);
+  // implement video link replacement
+
+  let pageHtml = await downloadUrl(url, 3);
   
   pageHtml = await replaceCSSLinksWithLocalFiles(
     pageHtml,
@@ -22,7 +24,10 @@ export async function saveWeixinArticle(url, accountId, path, checksum) {
   
   pageHtml = sanitizeArticlePage(pageHtml);
 
-  await fs.outputFileSync(`${path}/${accountId}/${checksum}.html`, pageHtml);
+  const savedArticleLocation = `${path}/${accountId}/${checksum}.html`;
+  if (!fs.pathExistsSync(savedArticleLocation)) {
+    await fs.outputFileSync(`${path}/${accountId}/${checksum}.html`, pageHtml);
+  }
 }
 
 
@@ -76,5 +81,10 @@ async function replaceImgLinksWithLocalFiles(pageHtml, saveLocation, linkPath) {
 
 
 function sanitizeArticlePage(pageHtml) {
-  return pageHtml.replace(/<div class="wx_network_msg_wrp".*<\/div>/g, '');
+  let result = pageHtml;
+
+  result = result.replace(/<div class="wx_network_msg_wrp".*<\/div>/g, '');
+  result = result.replace(/<div class="rich_media_area_extra".*<\/div>/g, '');
+  
+  return result;
 }

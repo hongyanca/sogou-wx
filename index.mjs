@@ -15,6 +15,7 @@ const ARTICLE_BASE = process.env.SAVED_ARTICLE_LOCATION || defaults.SAVED_ARTICL
 const run = async () => {
 
   const accounts = fs.readJsonSync(PUB_ACC_LOC);
+  // for (let i=1; i<accounts.length; i++) {
   for (let i=0; i<accounts.length; i++) {
     const sogouQueryUrl = process.env.SOGOU_WX_QUERY_BASE + accounts[i].wx_pub_account_id;
     const pageHtml = await fetchWithProxy(sogouQueryUrl);
