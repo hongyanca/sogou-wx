@@ -1,0 +1,9 @@
+{
+  "CONNECT_TIMEOUT": 30,
+  "RETRY_COUNT": 10,
+
+  "SOGOU_WX_BASE": "https://weixin.sogou.com",
+  "SOGOU_WX_QUERY_BASE": "https://weixin.sogou.com/weixin?type=1&s_from=input&query=",
+
+  "SAVED_ARTICLE_LOCATION": "./data"
+}

@@ -1,6 +1,8 @@
 import 'zx/globals';
 import hash from 'object-hash';
+import defaults from '../defaults.json' assert { type: 'json' };
 
+const CONNECT_TIMEOUT = process.env.CONNECT_TIMEOUT || defaults.CONNECT_TIMEOUT;
 
 export function extractTitle(anchorElement) {
   const match = anchorElement.match(/>.*?<\/a/);
@@ -57,7 +59,7 @@ export async function getSogouCookies() {
 }
 
 
-export async function extractWeixinUrl(anchorElement) {
+export async function extractWxPubAccountArticleUrl(anchorElement) {
   const sogouLink = extractSogouLink(anchorElement);
   if (sogouLink.length === 0) {
     return '';
@@ -71,7 +73,7 @@ export async function extractWeixinUrl(anchorElement) {
   let weixinUrl = '';
 
   try {
-    const response = await $`curl -sS --max-time ${process.env.CURL_TIMEOUT} --cookie "${cookies.SNUID}" --cookie "${cookies.SUV}" ${sogouLink}`;
+    const response = await $`curl -sS --max-time ${CONNECT_TIMEOUT} --cookie "${cookies.SNUID}" --cookie "${cookies.SUV}" ${sogouLink}`;
     const pageHtml = response._stdout || '';
     const urlFragments = pageHtml.match(/url\s\+=.*/g);
     urlFragments && urlFragments.forEach(elem => {
