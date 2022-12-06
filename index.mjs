@@ -1,5 +1,8 @@
+import * as dotenv from 'dotenv';
+dotenv.config()
 import playwright from 'playwright';
 import 'zx/globals';
+import { getProxy, fetchWithProxy } from './src/util.mjs';
 
 const PUB_ACC_LOC = './pub-accounts.json';
 const SOGOU_WX_URL = 'https://weixin.sogou.com/weixin?type=1&s_from=input&query=';
@@ -8,21 +11,20 @@ const REL_CSS_LOC = '../styles';
 const TITLE_MD5 = 'd9328d3f7071730e6db055f1fd5edb31';
 
 const run = async () => {
-  // const browser = await playwright.chromium.launch({
-    const browser = await playwright.firefox.launch({
+
+  await fetchWithProxy('https://weixin.sogou.com/weixin?type=1&s_from=input&query=lifeweek');
+  // console.log(await fetchWithProxy('https://weixin.sogou.com/weixin?type=1&s_from=input&query=lifeweek'));
+  await $`exit 1`
+
+  const browser = await playwright.chromium.launch({
+  // const browser = await playwright.firefox.launch({
     headless: false // Show the browser.
   });
   const page = await browser.newPage();
-
-  await page.goto('https://weixin.sogou.com');
-  await page.waitForTimeout(1210);
-
+ 
   const accounts = fs.readJsonSync(PUB_ACC_LOC);
-  await page.type('#query', 'lifeweek', {delay: 125});
-  await page.locator('text="搜公众号"').click();
   for (let i=0; i<accounts.length; i++) {
-    
-    // const sogouQueryUrl = SOGOU_WX_URL + accounts[i].wx_id;
+    const sogouQueryUrl = SOGOU_WX_URL + accounts[i].wx_id;
     
     
     // await page.goto(sogouQueryUrl);
