@@ -1,3 +1,5 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
 import 'zx/globals';
 import hash from 'object-hash';
 import defaults from '../defaults.json' assert { type: 'json' };

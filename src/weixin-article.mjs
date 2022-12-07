@@ -1,8 +1,5 @@
-import defaults from '../defaults.json' assert { type: 'json' };
 import { downloadUrl } from './util.mjs';
 
-// const SAVED_ARTICLE_LOCATION = 
-//   process.env.SAVED_ARTICLE_LOCATION || defaults.SAVED_ARTICLE_LOCATION;
 
 export async function saveWeixinArticle(url, accountId, path, checksum) {
   // Todo:
@@ -81,10 +78,8 @@ async function replaceImgLinksWithLocalFiles(pageHtml, saveLocation, linkPath) {
 
 
 function sanitizeArticlePage(pageHtml) {
-  let result = pageHtml;
+  let result = pageHtml
+    .replace(/rich_media_area_extra"/g, `rich_media_area_extra" style="display:none"`);
 
-  result = result.replace(/<div class="wx_network_msg_wrp".*<\/div>/g, '');
-  result = result.replace(/<div class="rich_media_area_extra".*<\/div>/g, '');
-  
   return result;
 }

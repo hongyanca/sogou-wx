@@ -1,4 +1,7 @@
 {
+  "PUB_ACCOUNT": "./pub-accounts.json",
+
+  "PROXY_POOL": "http://192.168.0.32:5555/random",
   "CONNECT_TIMEOUT": 30,
   "RETRY_COUNT": 10,
 
