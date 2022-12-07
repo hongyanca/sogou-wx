@@ -6,6 +6,12 @@ export async function saveWeixinArticle(url, accountId, path, checksum) {
   // replace http with https in the url
   // implement video link replacement
 
+  const savedArticleLocation = `${path}/${accountId}/${checksum}.html`;
+  if (fs.pathExistsSync(savedArticleLocation)) {
+    console.log(`${savedArticleLocation} exists. Skip saving article.`);
+    return;
+  }
+
   let pageHtml = await downloadUrl(url, 3);
   
   pageHtml = await replaceCSSLinksWithLocalFiles(
@@ -21,10 +27,7 @@ export async function saveWeixinArticle(url, accountId, path, checksum) {
   
   pageHtml = sanitizeArticlePage(pageHtml);
 
-  const savedArticleLocation = `${path}/${accountId}/${checksum}.html`;
-  if (!fs.pathExistsSync(savedArticleLocation)) {
-    await fs.outputFileSync(`${path}/${accountId}/${checksum}.html`, pageHtml);
-  }
+  await fs.outputFileSync(`${path}/${accountId}/${checksum}.html`, pageHtml);
 }
 
 
