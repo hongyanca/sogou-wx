@@ -107,21 +107,33 @@ async function downloadWithOptionalProxy(url, proxy = null, cookies = []) {
 
 
 export function generateIndexHtml(path, subfolders) {
-  const htmlFiles = [];
+  let anchorElements = '';
 
-  subfolders.forEach(subfolder => {
-    const filenames = fs.readdirSync(`${path}/${subfolder}`);
-    filenames.filter(file => file.endsWith('.html'))
-      .forEach(file => { htmlFiles.push(`./${subfolder}/${file}`) });
-  });
+  try {
+    const htmlFiles = [];
+    subfolders.forEach(subfolder => {
+      if (fs.existsSync(`${path}/${subfolder}`)) {
+        const filenames = fs.readdirSync(`${path}/${subfolder}`);
+        filenames.filter(file => file.endsWith('.html'))
+          .forEach(file => { htmlFiles.push(`./${subfolder}/${file}`) });
+      } else {
+        console.log(`${path}/${subfolder} does not exist.`);
+      }
+    });
+    
+    htmlFiles.forEach(file => {
+      anchorElements += generateArticleLink(path, file);
+    });
+  } catch (error) {
+    anchorElements = '';
+    console.log(error);
+  }
   
   const template = getIndexTemplate(path);
-  let anchorElements = '';
-  htmlFiles.forEach(file => {
-    anchorElements += generateArticleLink(path, file);
-  });
-  
-  return template.replace(`id="wx_article_list">`, `id="wx_article_list">${anchorElements}`);
+  const indexPage = template.replace(`id="wx_article_list">`, 
+    `id="wx_article_list">${anchorElements}`);
+
+  return indexPage;
 }
 
 

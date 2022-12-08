@@ -46,7 +46,7 @@ const run = async () => {
 
   fs.writeJsonSync(PUB_ACCOUNT, accounts, { spaces: "  " });
   const articleListPage = generateIndexHtml(ARTICLE_SAVE_LOCATION, 
-      accounts.map(account => account.wx_pub_account_id));
+    accounts.map(account => account.wx_pub_account_id));
   fs.outputFileSync(`${ARTICLE_SAVE_LOCATION}/index.html`, articleListPage);
 };
 
