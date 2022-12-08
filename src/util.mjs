@@ -7,6 +7,7 @@ const PROXY_POOL = process.env.PROXY_POOL || defaults.PROXY_POOL;
 const CONNECT_TIMEOUT = process.env.CONNECT_TIMEOUT || defaults.CONNECT_TIMEOUT;
 const RETRY_COUNT = process.env.RETRY_COUNT || defaults.RETRY_COUNT;
 
+
 export async function fetchWebPageContent(url) {
   let pageHtml = await downloadWithOptionalProxy(url);
   if (pageHtml && pageHtml.length >= 200) {
@@ -30,7 +31,7 @@ export async function fetchWebPageContent(url) {
 }
 
 
-export async function getProxy() {
+async function getProxy() {
   let proxy = null; 
 
   try {

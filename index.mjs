@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 import 'zx/globals';
-import { fetchWebPageContent, generateIndexHtml } from './src/util.mjs';
+import { fetchWebPageContent, generateIndexHtml, articleSaved } from './src/util.mjs';
 import { extractTitle, extractTitleChecksum, extractWxPubAccountArticleUrl } from './src/sogou-result.mjs';
 import { saveWeixinArticle } from './src/weixin-article.mjs';
 import defaults from './defaults.json' assert { type: 'json' };
@@ -21,7 +21,7 @@ const run = async () => {
     if (!pageHtml) {
       continue;
     }
-    
+
     const articleLinks = pageHtml.match(/<a.*?account_article_.*?<\/a>/g);
     if (!articleLinks || 
       !Array.isArray(articleLinks) ||
@@ -32,7 +32,9 @@ const run = async () => {
 
     const anchorElement = articleLinks[accounts[i].article_index];
     const checksum = extractTitleChecksum(anchorElement);
-    if (accounts[i].latest_article_md5 === checksum) {
+    // If the latest article has been saved, skip the download.
+    if (accounts[i].latest_article_md5 === checksum &&
+      fs.existsSync(`${ARTICLE_SAVE_LOCATION}/${accounts[i].wx_pub_account_id}/${checksum}.html`)) {
       continue;
     }
     
