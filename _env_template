@@ -1,5 +1,10 @@
-PROXY_POOL='http://192.168.0.32:5555/random'
-CURL_TIMEOUT=30
+PUB_ACCOUNT='./pub-accounts.json'
+
+PROXY_POOL='YOUR_PROXY_POOL Check https://github.com/Python3WebSpider/ProxyPool'
+CONNECT_TIMEOUT=30
 RETRY_COUNT=10
 
+SOGOU_WX_BASE='https://weixin.sogou.com'
 SOGOU_WX_QUERY_BASE='https://weixin.sogou.com/weixin?type=1&s_from=input&query='
+
+ARTICLE_SAVE_LOCATION='./data'
