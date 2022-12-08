@@ -11,6 +11,9 @@ COPY package*.json ./
 #alpine linux
 #RUN apk --no-cache add curl
 
+#lts-slim
+RUN apt-get update && apt-get install curl -y
+
 RUN npm install
 
 # If you are building your code for production
