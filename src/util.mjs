@@ -8,9 +8,10 @@ const CONNECT_TIMEOUT = process.env.CONNECT_TIMEOUT || defaults.CONNECT_TIMEOUT;
 const RETRY_COUNT = process.env.RETRY_COUNT || defaults.RETRY_COUNT;
 
 
-export async function fetchWebPageContent(url) {
-  let pageHtml = await downloadWithOptionalProxy(url);
-  if (pageHtml && pageHtml.length >= 200) {
+export async function fetchWebPageContent(url, cookies = []) {
+  // let pageHtml = '';
+  let pageHtml = await downloadWithOptionalProxy(url, null, cookies);
+  if (pageHtml && pageHtml.length >= 500) {
     return pageHtml;
   }
 
@@ -21,8 +22,8 @@ export async function fetchWebPageContent(url) {
       continue;
     }
 
-    pageHtml = await downloadWithOptionalProxy(url, proxy);
-    if (pageHtml && pageHtml.length >= 200) {
+    pageHtml = await downloadWithOptionalProxy(url, proxy, cookies);
+    if (pageHtml && pageHtml.length >= 500) {
       break;
     }
   }
@@ -70,29 +71,31 @@ export async function downloadUrl(url, retry = RETRY_COUNT) {
 }
 
 
-async function downloadWithOptionalProxy(url, proxy = null) {
+async function downloadWithOptionalProxy(url, proxy = null, cookies = []) {
+  let curlCmd = `curl -sS --max-time ${CONNECT_TIMEOUT} `;
+  if (cookies.length > 0) {
+    cookies.forEach(cookie => {
+      curlCmd += ` --cookie "${cookie}" `;
+    });
+  }
+  if (proxy && proxy.length > 0) {
+    curlCmd += ` -x "${proxy}" `;
+  }
+  curlCmd += ` "${url}"`;
+
   let pageHtml = '';
-  
   try {
-    let response = null;
-    if (proxy && proxy.length > 0) {
-      response = await $`curl -sS --max-time ${CONNECT_TIMEOUT} -x "${proxy}" ${url}`;
-    } else {
-      response = await $`curl -sS --max-time ${CONNECT_TIMEOUT} ${url}`;
-    }  
-    
+    let response = await $`/bin/sh -c ${curlCmd}`;   
     pageHtml = response._stdout || '';
     // Proxy worked, but sogou antispider has detected the fetch.
-    if (pageHtml.indexOf('<title>302 Found</title>') >= 0 || pageHtml.length < 200) {
+    if (pageHtml.indexOf('<title>302 Found</title>') >= 0 || 
+      pageHtml.indexOf('weixin.sogou.com/antispider') >= 0 ||
+      pageHtml.length < 500) {
       throw({ exitCode: 1, stderr: 'Detected by sogou antispider.' });
     }
   } catch (error) {
-    pageHtml = '';
+    pageHtml = null;
     console.log(`Error: ${error.stderr}`);
-  }
-
-  if (pageHtml.length === 0) {
-    return null;
   }
 
   return pageHtml;
