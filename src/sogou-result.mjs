@@ -70,7 +70,7 @@ export async function extractWxPubAccountArticleUrl(anchorElement) {
     return '';
   }
 
-  let weixinUrl = null;
+  let weixinUrl = '';
   try {
     const pageHtml = await fetchWebPageContent(sogouLink, [cookies.SNUID, cookies.SUV]);
     if (!pageHtml) {
@@ -84,7 +84,7 @@ export async function extractWxPubAccountArticleUrl(anchorElement) {
     console.log(error);
   }
   
-  return weixinUrl;
+  return weixinUrl.length > 0 ? weixinUrl : null;
 }
 
 

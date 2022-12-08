@@ -74,26 +74,28 @@ export async function downloadUrl(url, retry = RETRY_COUNT) {
 
 
 async function downloadWithOptionalProxy(url, proxy = null, cookies = []) {
-  let curlCmd = `curl -sS --max-time ${CONNECT_TIMEOUT} `;
+  let curlArgs = ['-sS', '--max-time', CONNECT_TIMEOUT];
   if (cookies.length > 0) {
     cookies.forEach(cookie => {
-      curlCmd += ` --cookie "${cookie}" `;
+      curlArgs.push('--cookie');
+      curlArgs.push(cookie);
     });
   }
   if (proxy && proxy.length > 0) {
-    curlCmd += ` -x "${proxy}" `;
+    curlArgs.push('-x');
+    curlArgs.push(proxy);
   }
-  curlCmd += ` "${url}"`;
+  curlArgs.push(url);
 
   let pageHtml = '';
   try {
-    let response = await $`/bin/sh -c ${curlCmd}`;   
+    let response = await $`curl ${curlArgs}`;
     pageHtml = response._stdout || '';
     // Proxy worked, but sogou antispider has detected the fetch.
     if (pageHtml.indexOf('<title>302 Found</title>') >= 0 || 
       pageHtml.indexOf('weixin.sogou.com/antispider') >= 0 ||
       pageHtml.length < 500) {
-      throw({ exitCode: 1, stderr: 'Detected by sogou antispider.' });
+      throw({ stderr: 'Detected by sogou antispider.' });
     }
   } catch (error) {
     pageHtml = null;
