@@ -7,6 +7,7 @@ const PROXY_POOL = process.env.PROXY_POOL || defaults.PROXY_POOL;
 const CONNECT_TIMEOUT = process.env.CONNECT_TIMEOUT || defaults.CONNECT_TIMEOUT;
 const RETRY_COUNT = process.env.RETRY_COUNT || defaults.RETRY_COUNT;
 
+let lastUsableProxy = null;
 
 export async function fetchWebPageContent(url, cookies = []) {
   // let pageHtml = '';
@@ -18,7 +19,8 @@ export async function fetchWebPageContent(url, cookies = []) {
   }
 
   for (let i=0; i<RETRY_COUNT; i++) {
-    const proxy = await getProxy();
+    lastUsableProxy && console.log(`Last usable proxy: ${lastUsableProxy}`);
+    const proxy = lastUsableProxy || await getProxy();
     if (!proxy) {
       await $`echo 'Failed to get proxy.' && sleep 3`;
       continue;
@@ -26,7 +28,10 @@ export async function fetchWebPageContent(url, cookies = []) {
 
     pageHtml = await downloadWithOptionalProxy(url, proxy, cookies);
     if (pageHtml && pageHtml.length >= 500) {
+      lastUsableProxy = proxy;
       break;
+    } else {
+      lastUsableProxy = null;
     }
   }
 
