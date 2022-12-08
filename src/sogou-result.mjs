@@ -6,7 +6,7 @@ import defaults from '../defaults.json' assert { type: 'json' };
 
 const CONNECT_TIMEOUT = process.env.CONNECT_TIMEOUT || defaults.CONNECT_TIMEOUT;
 
-export function extractTitle(anchorElement) {
+function extractTitle(anchorElement) {
   const match = anchorElement.match(/>.*?<\/a/);
   if (!match || !Array.isArray(match)) {
     return '';

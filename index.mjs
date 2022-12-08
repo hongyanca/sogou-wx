@@ -1,8 +1,8 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 import 'zx/globals';
-import { fetchWebPageContent, generateIndexHtml, articleSaved } from './src/util.mjs';
-import { extractTitle, extractTitleChecksum, extractWxPubAccountArticleUrl } from './src/sogou-result.mjs';
+import { fetchWebPageContent, generateIndexHtml } from './src/util.mjs';
+import { extractTitleChecksum, extractWxPubAccountArticleUrl } from './src/sogou-result.mjs';
 import { saveWeixinArticle } from './src/weixin-article.mjs';
 import defaults from './defaults.json' assert { type: 'json' };
 
