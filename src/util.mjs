@@ -13,6 +13,8 @@ export async function fetchWebPageContent(url, cookies = []) {
   let pageHtml = await downloadWithOptionalProxy(url, null, cookies);
   if (pageHtml && pageHtml.length >= 500) {
     return pageHtml;
+  } else {
+    console.log('IP address has been banned by sogou.');
   }
 
   for (let i=0; i<RETRY_COUNT; i++) {

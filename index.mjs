@@ -39,6 +39,7 @@ const run = async () => {
     }
     
     const articleUrl = await extractWxPubAccountArticleUrl(anchorElement);
+    if (!articleUrl) continue;
     await saveWeixinArticle(articleUrl, accounts[i].wx_pub_account_id, ARTICLE_SAVE_LOCATION, checksum);
     accounts[i].latest_article_md5 = extractTitleChecksum(anchorElement);
   }

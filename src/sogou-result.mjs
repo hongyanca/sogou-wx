@@ -70,10 +70,12 @@ export async function extractWxPubAccountArticleUrl(anchorElement) {
     return '';
   }
 
-  let weixinUrl = '';
-
+  let weixinUrl = null;
   try {
     const pageHtml = await fetchWebPageContent(sogouLink, [cookies.SNUID, cookies.SUV]);
+    if (!pageHtml) {
+      throw('Failed to extract weixin article link.');
+    }
     const urlFragments = pageHtml.match(/url\s\+=.*/g);
     urlFragments && urlFragments.forEach(elem => {
       weixinUrl = weixinUrl + elem.substring(elem.indexOf(`'`)+1, elem.lastIndexOf(`'`));
