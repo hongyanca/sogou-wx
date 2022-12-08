@@ -13,7 +13,7 @@ const SOGOU_WX_QUERY_BASE = process.env.SOGOU_WX_QUERY_BASE || defaults.SOGOU_WX
 
 const run = async () => {
   const accounts = fs.readJsonSync(PUB_ACCOUNT);
-/*
+
   // for (let i=1; i<accounts.length; i++) {
   for (let i=0; i<accounts.length; i++) {
     const sogouQueryUrl = SOGOU_WX_QUERY_BASE + accounts[i].wx_pub_account_id;
@@ -40,7 +40,7 @@ const run = async () => {
     await saveWeixinArticle(articleUrl, accounts[i].wx_pub_account_id, ARTICLE_SAVE_LOCATION, checksum);
     accounts[i].latest_article_md5 = extractTitleChecksum(anchorElement);
   }
-*/
+
   fs.writeJsonSync(PUB_ACCOUNT, accounts, { spaces: "  " });
   const articleListPage = generateIndexHtml(ARTICLE_SAVE_LOCATION, 
       accounts.map(account => account.wx_pub_account_id));
