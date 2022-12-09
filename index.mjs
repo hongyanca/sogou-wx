@@ -10,6 +10,10 @@ const PUB_ACCOUNT = process.env.PUB_ACCOUNT || defaults.PUB_ACCOUNT;
 const ARTICLE_SAVE_LOCATION = process.env.ARTICLE_SAVE_LOCATION || defaults.ARTICLE_SAVE_LOCATION;
 const SOGOU_WX_QUERY_BASE = process.env.SOGOU_WX_QUERY_BASE || defaults.SOGOU_WX_QUERY_BASE;
 
+const cssFile = await fetch('https://res.wx.qq.com/mmbizappmsg/zh_CN/htmledition/js/assets/controller.lbgbwvd4c8228a77.css');
+console.log(await cssFile.text());
+process.exit(0);
+
 
 const run = async () => {
   const accounts = fs.readJsonSync(PUB_ACCOUNT);

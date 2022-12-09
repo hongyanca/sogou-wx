@@ -137,7 +137,7 @@ export function generateIndexHtml(path, subfolders) {
     console.log(error);
   }
   
-  const template = getIndexTemplate(path);
+  const template = getIndexTemplate();
   const indexPage = template.replace(`id="wx_article_list">`, 
     `id="wx_article_list">${anchorElements}`);
 
@@ -145,10 +145,16 @@ export function generateIndexHtml(path, subfolders) {
 }
 
 
-function getIndexTemplate(path) {
+function getIndexTemplate() {
+  const INDEX_TEMPLATE = process.env.INDEX_TEMPLATE || defaults.INDEX_TEMPLATE;
+
   let template = '';
   try {
-    template = fs.readFileSync(`${path}/template.html`, { encoding:'utf8', flag:'r' });
+    if (fs.existsSync(`${INDEX_TEMPLATE}`)) {
+      template = fs.readFileSync(`${INDEX_TEMPLATE}`, { encoding:'utf8', flag:'r' });
+    } else {
+      throw("Cannot find template.html, default template will be used.");
+    }    
   } catch (error) {
     console.log(error);
   } finally {

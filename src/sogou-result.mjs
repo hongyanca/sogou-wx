@@ -86,5 +86,3 @@ export async function extractWxPubAccountArticleUrl(anchorElement) {
   
   return weixinUrl.length > 0 ? weixinUrl : null;
 }
-
-

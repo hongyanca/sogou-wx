@@ -1,6 +1,7 @@
-PUB_ACCOUNT='./pub-accounts.json'
+PUB_ACCOUNT='./config/pub-accounts.json'
+INDEX_TEMPLATE='./config/template.html'
 
-PROXY_POOL='YOUR_PROXY_POOL Check https://github.com/Python3WebSpider/ProxyPool'
+PROXY_POOL='YOUR_PROXY_POOL or https://github.com/Python3WebSpider/ProxyPool'
 CONNECT_TIMEOUT=30
 RETRY_COUNT=10
 

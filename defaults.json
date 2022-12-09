@@ -1,5 +1,6 @@
 {
-  "PUB_ACCOUNT": "./pub-accounts.json",
+  "PUB_ACCOUNT": "./config/pub-accounts.json",
+  "INDEX_TEMPLATE": "./config/template.html",
 
   "PROXY_POOL": "https://proxypool.scrape.center/random",
   "CONNECT_TIMEOUT": 30,
