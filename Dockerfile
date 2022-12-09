@@ -1,15 +1,12 @@
 FROM node:lts-slim
 
 # Create app directory
-WORKDIR /usr/src/app
+WORKDIR /app
 
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 # where available (npm@5+)
 COPY package*.json ./
-
-#alpine linux
-#RUN apk --no-cache add curl
 
 #lts-slim
 RUN apt-get update && apt-get install curl -y

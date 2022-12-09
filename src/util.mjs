@@ -15,7 +15,7 @@ export async function fetchWebPageContent(url, cookies = []) {
   if (pageHtml && pageHtml.length >= 500) {
     return pageHtml;
   } else {
-    console.log('IP address has been banned by sogou.');
+    console.log('IP address is banned by sogou.');
   }
 
   for (let i=0; i<RETRY_COUNT; i++) {
@@ -81,10 +81,13 @@ export async function downloadUrl(url, retry = RETRY_COUNT) {
 async function downloadWithOptionalProxy(url, proxy = null, cookies = []) {
   let curlArgs = ['-sS', '--max-time', CONNECT_TIMEOUT];
   if (cookies.length > 0) {
+    curlArgs.push('--cookie');
+    let cookieList = '';
     cookies.forEach(cookie => {
-      curlArgs.push('--cookie');
-      curlArgs.push(cookie);
+      cookieList = cookieList + `${cookie};`;
     });
+    cookieList = cookieList.replace(/;$/, '');
+    curlArgs.push(cookieList);
   }
   if (proxy && proxy.length > 0) {
     curlArgs.push('-x');

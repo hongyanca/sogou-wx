@@ -1,5 +1,8 @@
 .DS_Store
 data/
+/pub-accounts.json
+Dockerfile
+/*.sh
 
 node_modules/
 /test-results/
