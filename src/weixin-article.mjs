@@ -27,7 +27,7 @@ export async function saveWeixinArticle(url, accountId, path, checksum) {
   
   pageHtml = sanitizeArticlePage(pageHtml);
 
-  await fs.outputFileSync(`${path}/${accountId}/${checksum}.html`, pageHtml);
+  await fs.outputFileSync(`${path}/${accountId}/${Date.now()}-${checksum}.html`, pageHtml);
 }
 
 
@@ -64,7 +64,10 @@ async function replaceImgLinksWithLocalFiles(pageHtml, saveLocation, linkPath) {
   for (let i=0; i<imgLinks.length; i++) {
     const link = imgLinks[i];
     const url = link.replace(/^.*?data-src="/, '').replace(/".*>/, '');
-    const fileFormat = url.substring(url.lastIndexOf('wx_fmt=')+7);
+    if (!url.match(/wx_fmt/)) {
+      continue;
+    }
+    const fileFormat = url.match(/^.*?wx_fmt=([a-z]+)/)[1];
     const urlWithoutFormat = url.replace(url.substring(url.lastIndexOf('/')), '');
     const fileName = urlWithoutFormat
       .substring(urlWithoutFormat.lastIndexOf('/')+1) + '.' + fileFormat;

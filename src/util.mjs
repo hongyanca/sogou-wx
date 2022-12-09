@@ -117,6 +117,13 @@ async function downloadWithOptionalProxy(url, proxy = null, cookies = []) {
 export function generateIndexHtml(path, subfolders) {
   let anchorElements = '';
 
+  // Sort by the timestamp prefix of the filename
+  function compareArticleDateAndTime(file1, file2) {
+    const fileName1 = file1.substring(file1.lastIndexOf('/')+1);
+    const fileName2 = file2.substring(file2.lastIndexOf('/')+1);
+    return fileName1.localeCompare(fileName2);
+  }
+
   try {
     const htmlFiles = [];
     subfolders.forEach(subfolder => {
@@ -128,8 +135,8 @@ export function generateIndexHtml(path, subfolders) {
         console.log(`${path}/${subfolder} does not exist.`);
       }
     });
-    
-    htmlFiles.forEach(file => {
+
+    htmlFiles.sort(compareArticleDateAndTime).forEach(file => {
       anchorElements += generateArticleLink(path, file);
     });
   } catch (error) {

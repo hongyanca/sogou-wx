@@ -22,9 +22,11 @@ export function extractTitleChecksum(anchorElement) {
 
 
 export function extractSogouLink(anchorElement) {
+  const SOGOU_WX_BASE = process.env.SOGOU_WX_BASE || defaults.SOGOU_WX_BASE;
+
   const match = anchorElement.match(/href="\/(.*?)"/);
   if (match && Array.isArray(match)) {
-    return `${process.env.SOGOU_WX_BASE}/${match[1]}`;
+    return `${SOGOU_WX_BASE}/${match[1]}`;
   }
   return '';
 }
