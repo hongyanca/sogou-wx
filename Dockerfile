@@ -20,5 +20,5 @@ RUN npm install
 COPY . .
 
 # EXPOSE 8080
-#CMD [ "node", "index.mjs" ]
-ENTRYPOINT ["tail", "-f", "/dev/null"]
+CMD [ "node", "index.mjs" ]
+# ENTRYPOINT ["tail", "-f", "/dev/null"]
