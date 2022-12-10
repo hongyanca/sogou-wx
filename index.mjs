@@ -9,6 +9,7 @@ import defaults from './defaults.json' assert { type: 'json' };
 const PUB_ACCOUNT = process.env.PUB_ACCOUNT || defaults.PUB_ACCOUNT;
 const ARTICLE_SAVE_LOCATION = process.env.ARTICLE_SAVE_LOCATION || defaults.ARTICLE_SAVE_LOCATION;
 const SOGOU_WX_QUERY_BASE = process.env.SOGOU_WX_QUERY_BASE || defaults.SOGOU_WX_QUERY_BASE;
+const CHECK_INTERVAL = process.env.CHECK_INTERVAL || defaults.CHECK_INTERVAL;
 
 
 const run = async () => {
@@ -34,7 +35,8 @@ const run = async () => {
     const checksum = extractTitleChecksum(anchorElement);
     // If the latest article has been saved, skip the download.
     if (accounts[i].latest_article_md5 === checksum &&
-      fs.existsSync(`${ARTICLE_SAVE_LOCATION}/${accounts[i].wx_pub_account_id}/${checksum}.html`)) {
+      fs.existsSync(`${ARTICLE_SAVE_LOCATION}/${accounts[i].wx_pub_account_id}/${checksum}_files`)) {
+      console.log('This article already exists.');
       continue;
     }
     
@@ -51,4 +53,8 @@ const run = async () => {
 };
 
 
-await run();
+while (true) {
+  await run();
+  console.log(`Done at ${new Date()}`);
+  await $`sleep ${CHECK_INTERVAL}`;
+}

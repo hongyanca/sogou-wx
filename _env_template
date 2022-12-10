@@ -1,6 +1,8 @@
 PUB_ACCOUNT='./config/pub-accounts.json'
 INDEX_TEMPLATE='./config/template.html'
 
+CHECK_INTERVAL=900
+
 PROXY_POOL='YOUR_PROXY_POOL or https://github.com/Python3WebSpider/ProxyPool'
 CONNECT_TIMEOUT=30
 RETRY_COUNT=10
