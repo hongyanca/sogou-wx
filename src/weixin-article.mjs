@@ -43,10 +43,14 @@ async function replaceCSSLinksWithLocalFiles(pageHtml, saveLocation, linkPath) {
 
     const fileName = url.substring(url.lastIndexOf('/')+1);
     if (!fs.pathExistsSync(`${saveLocation}/${fileName}`)) {
-      await $`mkdir -p ${saveLocation} &&
-        cd ${saveLocation} &&
-        curl -sS -o ${fileName} ${url} -q`;
-    }
+      await $`mkdir -p ${saveLocation}`;
+      const cssFileContent = await downloadUrl(url, 3);
+      try {
+        fs.outputFileSync(`${saveLocation}/${fileName}`, cssFileContent);
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
     updatedPageHtml = updatedPageHtml
       .replace(link, `<link href="${linkPath}/${fileName}" rel="stylesheet">`);
@@ -71,10 +75,15 @@ async function replaceImgLinksWithLocalFiles(pageHtml, saveLocation, linkPath) {
     const urlWithoutFormat = url.replace(url.substring(url.lastIndexOf('/')), '');
     const fileName = urlWithoutFormat
       .substring(urlWithoutFormat.lastIndexOf('/')+1) + '.' + fileFormat;
-    await $`mkdir -p ${saveLocation} && 
+
+    try {
+      await $`mkdir -p ${saveLocation} && 
       cd ${saveLocation} && 
       rm -f ${fileName} && 
       curl -sS -o ${fileName} ${url} -q`;
+    } catch (error) {
+      console.log(error);
+    }
 
     updatedPageHtml = updatedPageHtml.replace(link, `<img src="${linkPath}/${fileName}">`);
   };

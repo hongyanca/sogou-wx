@@ -60,11 +60,11 @@ async function getProxy() {
 export async function downloadUrl(url, retry = RETRY_COUNT) {
   let content = null;
 
-  for (let i=0; i<RETRY_COUNT; i++) {
+  for (let i=0; i<retry; i++) {
     try {
       const response = await fetch(url);
       if (response.status !== 200) {
-        throw(`Failed to fetch the article. Status code: ${response.status}`);
+        throw(`Failed to fetch. Status code: ${response.status}`);
       }
       content = await response.text();
       break;
