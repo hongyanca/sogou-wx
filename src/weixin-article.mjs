@@ -1,33 +1,42 @@
 import { downloadUrl } from './util.mjs';
 
 
-export async function saveWeixinArticle(url, accountId, path, checksum) {
+export async function saveWeixinArticle(article, path) {
   // Todo:
-  // replace http with https in the url
   // implement video link replacement
+  const { url, accountId, titleChecksum } = article;
 
-  const savedArticleLocation = `${path}/${accountId}/${checksum}.html`;
+  const savedArticleLocation = `${path}/${accountId}/${titleChecksum}.html`;
   if (fs.pathExistsSync(savedArticleLocation)) {
-    console.log(`${savedArticleLocation} exists. Skip saving article.`);
-    return;
+    console.log(`${savedArticleLocation} already exists. Skip saving article.`);
+    return false;
   }
 
-  let pageHtml = await downloadUrl(url, 3);
+  let isSuccess = false;
+  try {
+    let pageHtml = await downloadUrl(url, 3);
   
-  pageHtml = await replaceCSSLinksWithLocalFiles(
-    pageHtml,
-    `${path}/styles`,
-    '../styles');
+    pageHtml = await replaceCSSLinksWithLocalFiles(
+      pageHtml,
+      `${path}/styles`,
+      '../styles');
+    
+    pageHtml = await replaceImgLinksWithLocalFiles(
+      pageHtml,
+      `${path}/${accountId}/${titleChecksum}_files`,
+      `./${titleChecksum}_files`
+      );
+    
+    pageHtml = sanitizeArticlePage(pageHtml);
   
-  pageHtml = await replaceImgLinksWithLocalFiles(
-    pageHtml,
-    `${path}/${accountId}/${checksum}_files`,
-    `./${checksum}_files`
-    );
-  
-  pageHtml = sanitizeArticlePage(pageHtml);
+    fs.outputFileSync(`${path}/${accountId}/${Date.now()}-${titleChecksum}.html`, pageHtml);
+    isSuccess = true;
+  } catch(error) {
+    isSuccess = false;
+    console.log(error);
+  }
 
-  await fs.outputFileSync(`${path}/${accountId}/${Date.now()}-${checksum}.html`, pageHtml);
+  return isSuccess;
 }
 
 

@@ -16,12 +16,12 @@ function extractTitle(anchorElement) {
 }
 
 
-export function extractTitleChecksum(anchorElement) {
+function extractTitleChecksum(anchorElement) {
   return hash(extractTitle(anchorElement));
 }
 
 
-export function extractSogouLink(anchorElement) {
+function extractSogouLink(anchorElement) {
   const SOGOU_WX_BASE = process.env.SOGOU_WX_BASE || defaults.SOGOU_WX_BASE;
 
   const match = anchorElement.match(/href="\/(.*?)"/);
@@ -32,7 +32,7 @@ export function extractSogouLink(anchorElement) {
 }
 
 
-export async function getSogouCookies() {
+async function getSogouCookies() {
   const result = { SNUID: '', SUV: '' };
 
   try {
@@ -61,7 +61,7 @@ export async function getSogouCookies() {
 }
 
 
-export async function extractWxPubAccountArticleUrl(anchorElement) {
+async function extractWxPubAccountArticleUrl(anchorElement) {
   const sogouLink = extractSogouLink(anchorElement);
   if (sogouLink.length === 0) {
     return '';
@@ -87,4 +87,44 @@ export async function extractWxPubAccountArticleUrl(anchorElement) {
   }
   
   return weixinUrl.length > 0 ? weixinUrl : null;
+}
+
+
+export async function getLatestArticle(account) {
+  const SOGOU_WX_QUERY_BASE = process.env.SOGOU_WX_QUERY_BASE || defaults.SOGOU_WX_QUERY_BASE;
+  const ARTICLE_SAVE_LOCATION = process.env.ARTICLE_SAVE_LOCATION || defaults.ARTICLE_SAVE_LOCATION;
+
+  const sogouQueryUrl = SOGOU_WX_QUERY_BASE + account.wx_pub_account_id;
+  const pageHtml = await fetchWebPageContent(sogouQueryUrl);
+
+  if (!pageHtml) {
+    return null;
+  }
+
+  const articleLinks = pageHtml.match(/<a.*?account_article_.*?<\/a>/g);
+  if (!articleLinks || 
+    !Array.isArray(articleLinks) ||
+    articleLinks.length <= account.article_index ||
+    !articleLinks[account.article_index]) {
+    return null;
+  }
+
+  const anchorElement = articleLinks[account.article_index];
+  const checksum = extractTitleChecksum(anchorElement);
+  // If the latest article has been saved, skip the download.
+  if (account.latest_article_md5 === checksum &&
+    fs.existsSync(`${ARTICLE_SAVE_LOCATION}/${account.wx_pub_account_id}/${checksum}_files`)) {
+    console.log('This article already exists.');
+    return null;
+  }
+  const articleUrl = await extractWxPubAccountArticleUrl(anchorElement);
+  if (!articleUrl) {
+    return null;
+  }
+
+  return { 
+    accountId: account.wx_pub_account_id,
+    url: articleUrl,
+    titleChecksum: checksum
+  };
 }
