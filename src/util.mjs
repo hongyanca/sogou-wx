@@ -121,7 +121,7 @@ export function generateIndexHtml(path, subfolders) {
   function compareArticleDateAndTime(file1, file2) {
     const fileName1 = file1.substring(file1.lastIndexOf('/')+1);
     const fileName2 = file2.substring(file2.lastIndexOf('/')+1);
-    return fileName1.localeCompare(fileName2);
+    return -fileName1.localeCompare(fileName2);
   }
 
   try {
