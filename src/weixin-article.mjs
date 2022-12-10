@@ -1,3 +1,5 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
 import { downloadUrl } from './util.mjs';
 
 
@@ -29,8 +31,24 @@ export async function saveWeixinArticle(article, path) {
     
     pageHtml = sanitizeArticlePage(pageHtml);
   
-    fs.outputFileSync(`${path}/${accountId}/${Date.now()}-${titleChecksum}.html`, pageHtml);
+    const articlePath = `${accountId}/${Date.now()}-${titleChecksum}.html`;
+    fs.outputFileSync(`${path}/${articlePath}`, pageHtml);
     isSuccess = true;
+
+    const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+    const TELEGRAM_BOT_CHATID = process.env.TELEGRAM_BOT_CHATID;
+    const TELEGRAM_MSG_ARTICLE_LOC = process.env.TELEGRAM_MSG_ARTICLE_LOC;
+    console.log(TELEGRAM_BOT_TOKEN, TELEGRAM_BOT_CHATID, TELEGRAM_MSG_ARTICLE_LOC);
+    if (TELEGRAM_BOT_TOKEN && TELEGRAM_BOT_TOKEN.length > 0 &&
+      TELEGRAM_BOT_CHATID && TELEGRAM_BOT_CHATID.length > 0 &&
+      TELEGRAM_MSG_ARTICLE_LOC && TELEGRAM_MSG_ARTICLE_LOC.length > 0) {
+      const apiEndpoint = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+      const reqData = `chat_id=${TELEGRAM_BOT_CHATID}&text=${TELEGRAM_MSG_ARTICLE_LOC}/${articlePath}`;
+      const response = await $`curl -X POST ${apiEndpoint} -d ${reqData}`;
+      if (response._stdout.match(/"ok":true/)) {
+        console.log(`Telegram message sent by bot at ${new Date()}.`);
+      };
+    }
   } catch(error) {
     isSuccess = false;
     console.log(error);

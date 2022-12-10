@@ -110,10 +110,10 @@ export async function getLatestArticle(account) {
   }
 
   const anchorElement = articleLinks[account.article_index];
-  const checksum = extractTitleChecksum(anchorElement);
+  const titleChecksum = extractTitleChecksum(anchorElement);
   // If the latest article has been saved, skip the download.
-  if (account.latest_article_md5 === checksum &&
-    fs.existsSync(`${ARTICLE_SAVE_LOCATION}/${account.wx_pub_account_id}/${checksum}_files`)) {
+  if (account.latest_article_md5 === titleChecksum &&
+    fs.existsSync(`${ARTICLE_SAVE_LOCATION}/${account.wx_pub_account_id}/${titleChecksum}_files`)) {
     console.log('This article already exists.');
     return null;
   }
@@ -125,6 +125,6 @@ export async function getLatestArticle(account) {
   return { 
     accountId: account.wx_pub_account_id,
     url: articleUrl,
-    titleChecksum: checksum
+    titleChecksum: titleChecksum
   };
 }
