@@ -8,7 +8,7 @@ WORKDIR /app
 # where available (npm@5+)
 COPY package*.json ./
 
-#lts-slim
+# Install curl on lts-slim 
 RUN apt-get update && apt-get install curl -y
 
 RUN npm install
@@ -18,6 +18,9 @@ RUN npm install
 
 # Bundle app source
 COPY . .
+
+RUN useradd -r -u 1000 -g appuser appuser
+USER appuser
 
 # EXPOSE 8080
 CMD [ "node", "index.mjs" ]
