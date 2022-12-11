@@ -120,8 +120,10 @@ async function replaceImgLinksWithLocalFiles(pageHtml, saveLocation, linkPath) {
 
 
 function sanitizeArticlePage(pageHtml) {
-  let result = pageHtml
-    .replace(/rich_media_area_extra"/g, `rich_media_area_extra" style="display:none"`);
+  const result = pageHtml
+    .replace(/rich_media_area_extra"/g, `rich_media_area_extra" style="display:none"`)
+    .replace(/qr_code_pc"/g, 'qr_code_pc" style="display:none"')
+    .replace(/wx_network_msg"/g, 'wx_network_msg" style="display:none"');
 
   return result;
 }
