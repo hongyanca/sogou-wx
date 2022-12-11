@@ -19,7 +19,7 @@ RUN npm install
 # Bundle app source
 COPY . .
 
-RUN useradd -r -u 1000 -g appuser appuser
+RUN groupadd -g 1001 appuser && useradd -r -u 1000 -g 1000 appuser
 USER appuser
 
 # EXPOSE 8080
