@@ -19,6 +19,8 @@ RUN npm install
 # Bundle app source
 COPY . .
 
+USER node
+
 # EXPOSE 8080
 CMD [ "node", "index.mjs" ]
 # ENTRYPOINT ["tail", "-f", "/dev/null"]
