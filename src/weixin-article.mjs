@@ -122,8 +122,9 @@ async function replaceImgLinksWithLocalFiles(pageHtml, saveLocation, linkPath) {
 function sanitizeArticlePage(pageHtml) {
   const result = pageHtml
     .replace(/rich_media_area_extra"/g, `rich_media_area_extra" style="display:none"`)
-    .replace(/qr_code_pc"/g, 'qr_code_pc" style="display:none"')
-    .replace(/wx_network_msg"/g, 'wx_network_msg" style="display:none"');
+    .replace(/qr_code_pc_inner"/g, 'qr_code_pc_inner" style="display:none"')
+    .replace(/window.*?qr_code.*/g, '')
+    .replace(/<script.*?js_network_msg(.|\s|\S)*?script>/g, '');
 
   return result;
 }
