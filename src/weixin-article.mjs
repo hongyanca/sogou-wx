@@ -38,7 +38,6 @@ export async function saveWeixinArticle(article, path) {
     const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
     const TELEGRAM_BOT_CHATID = process.env.TELEGRAM_BOT_CHATID;
     const TELEGRAM_MSG_ARTICLE_LOC = process.env.TELEGRAM_MSG_ARTICLE_LOC;
-    console.log(TELEGRAM_BOT_TOKEN, TELEGRAM_BOT_CHATID, TELEGRAM_MSG_ARTICLE_LOC);
     if (TELEGRAM_BOT_TOKEN && TELEGRAM_BOT_TOKEN.length > 0 &&
       TELEGRAM_BOT_CHATID && TELEGRAM_BOT_CHATID.length > 0 &&
       TELEGRAM_MSG_ARTICLE_LOC && TELEGRAM_MSG_ARTICLE_LOC.length > 0) {
@@ -70,9 +69,9 @@ async function replaceCSSLinksWithLocalFiles(pageHtml, saveLocation, linkPath) {
 
     const fileName = url.substring(url.lastIndexOf('/')+1);
     if (!fs.pathExistsSync(`${saveLocation}/${fileName}`)) {
-      await $`mkdir -p ${saveLocation}`;
-      const cssFileContent = await downloadUrl(url, 3);
       try {
+        await $`mkdir -p ${saveLocation}`;
+        const cssFileContent = await downloadUrl(url, 3);
         fs.outputFileSync(`${saveLocation}/${fileName}`, cssFileContent);
       } catch (error) {
         console.log(error);
@@ -105,9 +104,9 @@ async function replaceImgLinksWithLocalFiles(pageHtml, saveLocation, linkPath) {
 
     try {
       await $`mkdir -p ${saveLocation} && 
-      cd ${saveLocation} && 
-      rm -f ${fileName} && 
-      curl -sS -o ${fileName} ${url} -q`;
+        cd ${saveLocation} && 
+        rm -f ${fileName} && 
+        curl -sS -o ${fileName} ${url} -q`;
     } catch (error) {
       console.log(error);
     }
