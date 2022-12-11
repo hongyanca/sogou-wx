@@ -59,7 +59,7 @@ async function getProxy() {
 
   let proxy = await _getProxy(process.env.PROXY_POOL || defaults.PROXY_POOL);
   if (!proxy) {
-    console.log('Failed to get proxy server from pool, using fallback proxy pool.');
+    console.log('Failed to get proxy server from pool, use fallback proxy pool.');
     proxy = await _getProxy(defaults.FALLBACK_PROXY_POOL);
   }
   

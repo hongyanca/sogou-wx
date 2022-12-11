@@ -35,21 +35,8 @@ export async function saveWeixinArticle(article, path) {
     fs.outputFileSync(`${path}/${articlePath}`, pageHtml);
     isSuccess = true;
 
-    const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-    const TELEGRAM_BOT_CHATID = process.env.TELEGRAM_BOT_CHATID;
-    const TELEGRAM_MSG_ARTICLE_LOC = process.env.TELEGRAM_MSG_ARTICLE_LOC;
-    if (TELEGRAM_BOT_TOKEN && TELEGRAM_BOT_TOKEN.length > 0 &&
-      TELEGRAM_BOT_CHATID && TELEGRAM_BOT_CHATID.length > 0 &&
-      TELEGRAM_MSG_ARTICLE_LOC && TELEGRAM_MSG_ARTICLE_LOC.length > 0) {
-      const apiEndpoint = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-      // Use %0A for line break. https://github.com/BracketSpace/Notification/issues/286
-      const message = `${TELEGRAM_MSG_ARTICLE_LOC}/${articlePath}%0A${article.accountName}`;
-      const reqData = `chat_id=${TELEGRAM_BOT_CHATID}&text=${message}`;
-      const response = await $`curl -X POST ${apiEndpoint} -d ${reqData}`;
-      if (response._stdout.match(/"ok":true/)) {
-        console.log(`Telegram message sent by bot at ${new Date()}.`);
-      };
-    }
+    const SITE_URL = process.env.TELEGRAM_MSG_ARTICLE_LOC;
+    await sendTelegramMessage(`${article.accountName}%0A${SITE_URL}/${articlePath}`);
   } catch(error) {
     isSuccess = false;
     console.log(error);
@@ -128,4 +115,34 @@ function sanitizeArticlePage(pageHtml) {
     .replace(/<script.*?js_network_msg(.|\s|\S)*?script>/g, '');
 
   return result;
+}
+
+
+async function sendTelegramMessage(message) {
+  const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+  const TELEGRAM_BOT_CHATID = process.env.TELEGRAM_BOT_CHATID;
+
+  const isValidArg = (TELEGRAM_BOT_TOKEN && TELEGRAM_BOT_TOKEN.length > 0 &&
+    TELEGRAM_BOT_CHATID && TELEGRAM_BOT_CHATID.length > 0);
+  if (!isValidArg) {
+    console.log('Invalid Telegram bot information. Failed to send Telegram message');
+    return;
+  }
+
+  try {
+    if (typeof message === 'string' || message instanceof String) {
+      const apiEndpoint = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+      // Use %0A for message line break.
+      const reqData = `chat_id=${TELEGRAM_BOT_CHATID}&text=${message}`;
+      const response = await $`curl -sS -X POST ${apiEndpoint} -d ${reqData}`;
+      if (response._stdout.match(/"ok":true/)) {
+        console.log(`Telegram message sent by bot at ${new Date()}.`);
+      };
+    } else {
+      throw("Invalid message.");
+    }
+  } catch(error) {
+    console.log(error);
+    console.log('Failed to send Telegram message.');
+  }
 }
