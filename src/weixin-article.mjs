@@ -42,7 +42,9 @@ export async function saveWeixinArticle(article, path) {
       TELEGRAM_BOT_CHATID && TELEGRAM_BOT_CHATID.length > 0 &&
       TELEGRAM_MSG_ARTICLE_LOC && TELEGRAM_MSG_ARTICLE_LOC.length > 0) {
       const apiEndpoint = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-      const reqData = `chat_id=${TELEGRAM_BOT_CHATID}&text=${TELEGRAM_MSG_ARTICLE_LOC}/${articlePath}`;
+      // Use %0A for line break. https://github.com/BracketSpace/Notification/issues/286
+      const message = `${TELEGRAM_MSG_ARTICLE_LOC}/${articlePath}%0A${article.accountName}`;
+      const reqData = `chat_id=${TELEGRAM_BOT_CHATID}&text=${message}`;
       const response = await $`curl -X POST ${apiEndpoint} -d ${reqData}`;
       if (response._stdout.match(/"ok":true/)) {
         console.log(`Telegram message sent by bot at ${new Date()}.`);

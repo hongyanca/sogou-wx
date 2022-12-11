@@ -124,6 +124,7 @@ export async function getLatestArticle(account) {
 
   return { 
     accountId: account.wx_pub_account_id,
+    accountName: account.pub_account_name,
     url: articleUrl,
     titleChecksum: titleChecksum
   };
