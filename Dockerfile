@@ -19,9 +19,6 @@ RUN npm install
 # Bundle app source
 COPY . .
 
-RUN groupadd -g 1001 appuser && useradd -r -u 1001 -g 1001 appuser
-USER appuser
-
 # EXPOSE 8080
 CMD [ "node", "index.mjs" ]
 # ENTRYPOINT ["tail", "-f", "/dev/null"]
