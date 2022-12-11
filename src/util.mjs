@@ -3,14 +3,13 @@ dotenv.config();
 import 'zx/globals';
 import defaults from '../defaults.json' assert { type: 'json' };
 
-const PROXY_POOL = process.env.PROXY_POOL || defaults.PROXY_POOL;
 const CONNECT_TIMEOUT = process.env.CONNECT_TIMEOUT || defaults.CONNECT_TIMEOUT;
 const RETRY_COUNT = process.env.RETRY_COUNT || defaults.RETRY_COUNT;
 
 let lastUsableProxy = null;
 
+
 export async function fetchWebPageContent(url, cookies = []) {
-  // let pageHtml = '';
   let pageHtml = await downloadWithOptionalProxy(url, null, cookies);
   if (pageHtml && pageHtml.length >= 500) {
     return pageHtml;
@@ -40,17 +39,28 @@ export async function fetchWebPageContent(url, cookies = []) {
 
 
 async function getProxy() {
-  let proxy = null; 
+  async function _getProxy(poolUrl) {
+    let proxyServer = null;
 
-  try {
-    const response = await fetch(PROXY_POOL);
-    proxy = await response.text();
-  } catch (error) {
-    console.error(error)
+    try {
+      const response = await $`curl -sS --max-time ${CONNECT_TIMEOUT} ${poolUrl}`;
+      proxyServer = response._stdout || '';
+      if (!proxyServer.match(/[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+/) ||
+        proxyServer.length > 23) {
+        throw("Invalid proxy server.");
+      }
+    } catch (error) {
+      proxyServer = null;
+      console.error(error)
+    }
+
+    return proxyServer;
   }
-  
-  if (!proxy.match(/[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+/)) {
-    return null;
+
+  let proxy = await _getProxy(process.env.PROXY_POOL || defaults.PROXY_POOL);
+  if (!proxy) {
+    console.log('Failed to get proxy server from pool, using fallback proxy pool.');
+    proxy = await _getProxy(defaults.FALLBACK_PROXY_POOL);
   }
   
   return proxy;

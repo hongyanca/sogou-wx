@@ -5,6 +5,7 @@
   "CHECK_INTERVAL": 900,
 
   "PROXY_POOL": "https://proxypool.scrape.center/random",
+  "FALLBACK_PROXY_POOL": "https://proxypool.scrape.center/random",
   "CONNECT_TIMEOUT": 30,
   "RETRY_COUNT": 10,
 
