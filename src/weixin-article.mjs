@@ -31,7 +31,7 @@ export async function saveWeixinArticle(article, path) {
     
     pageHtml = sanitizeArticlePage(pageHtml);
   
-    const articlePath = `${accountId}/${Date.now()}-${titleChecksum}.html`;
+    const articlePath = `${accountId}/${titleChecksum}.html`;
     fs.outputFileSync(`${path}/${articlePath}`, pageHtml);
     isSuccess = true;
 

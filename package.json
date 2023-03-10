@@ -1,6 +1,6 @@
 {
   "name": "sogou-wx",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Weixin Public Account Latest Article Collector",
   "main": "index.mjs",
   "scripts": {
@@ -12,7 +12,7 @@
   "dependencies": {
     "dotenv": "^16.0.3",
     "object-hash": "^3.0.0",
-    "zx": "^7.1.1"
+    "zx": "^7.2"
   },
   "bundleDependencies": [
     "dotenv"
