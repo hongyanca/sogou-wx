@@ -3,7 +3,7 @@ dotenv.config();
 import 'zx/globals';
 import hash from 'object-hash';
 import defaults from '../defaults.json' assert { type: 'json' };
-import { fetchWebPageContent } from './util.mjs';
+import { fetchWebPageContent, fetchWebPageCookies } from './util.mjs';
 
 
 function extractTitle(anchorElement) {
@@ -32,6 +32,7 @@ function extractSogouLink(anchorElement) {
 }
 
 
+/*
 async function getSogouCookies() {
   const result = { SNUID: '', SUV: '' };
 
@@ -59,6 +60,7 @@ async function getSogouCookies() {
   
   return result;
 }
+*/
 
 
 async function extractWxPubAccountArticleUrl(anchorElement) {
@@ -67,8 +69,13 @@ async function extractWxPubAccountArticleUrl(anchorElement) {
     return '';
   }
 
-  const cookies = await getSogouCookies();
-  if (cookies.SNUID.length === 0 || cookies.SUV.length === 0) {
+  // const cookies = await getSogouCookies();
+  const cookies = await fetchWebPageCookies('https://v.sogou.com', ['SNUID', 'SUV']);
+  console.log(cookies);
+  if (!cookies.hasOwnProperty('SNUID') || 
+    !cookies.hasOwnProperty('SUV') ||
+    cookies.SNUID.length === 0 ||
+    cookies.SUV.length === 0) {
     return '';
   }
 

@@ -6,6 +6,7 @@ import { getLatestArticle } from './src/sogou-wx-search.mjs';
 import { saveWeixinArticle } from './src/weixin-article.mjs';
 import defaults from './defaults.json' assert { type: 'json' };
 
+
 const PUB_ACCOUNT = process.env.PUB_ACCOUNT || defaults.PUB_ACCOUNT;
 const ARTICLE_SAVE_LOCATION = process.env.ARTICLE_SAVE_LOCATION || defaults.ARTICLE_SAVE_LOCATION;
 const CHECK_INTERVAL = process.env.CHECK_INTERVAL || defaults.CHECK_INTERVAL;

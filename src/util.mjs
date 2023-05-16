@@ -38,6 +38,38 @@ export async function fetchWebPageContent(url, cookies = []) {
 }
 
 
+export async function fetchWebPageCookies(url, cookieNames = []) {
+  const fetchedCookies = {};
+
+  const curlArgs = ['-sI', '--max-time', CONNECT_TIMEOUT, url];
+  for (let i=0; i<RETRY_COUNT; i++) {
+    try {
+      const header = await $`curl ${curlArgs}`;
+      let lines = (header._stdout || '').split('\n');
+      const setCookieRegex = /^Set-Cookie:\s*([^;]+)/i;
+      for (let j=0; j<lines.length; j++) {
+        const cookie = lines[j].match(setCookieRegex);
+        if (!cookie || !Array.isArray(cookie) || cookie.length<2) continue;
+        const index = cookie[1].indexOf('=');
+        if (index === -1) continue;
+        const cookieName = cookie[1].substring(0, index);
+        if (Array.isArray(cookieNames) && cookieNames.length > 0) {
+          if (cookieNames.includes(cookieName)) {
+            fetchedCookies[cookieName]=cookie[1];
+          }
+        } else {
+          fetchedCookies[cookieName]=cookie[1];
+        }       
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    if (Object.keys(fetchedCookies).length !== 0) break;
+  }
+  return fetchedCookies;
+}
+
+
 async function getProxy() {
   async function _getProxy(poolUrl) {
     let proxyServer = null;
